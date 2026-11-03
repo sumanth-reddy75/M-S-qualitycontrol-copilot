@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
 authors = [
-    { name = "sumanth11005", email = "em24mtech11005@iith.ac.in" }
+    { name = "sumanth-reddy75", email = "sumanth9975@gmail.com" }
 ]
 keywords = [
     "rag",
@@ -146,6 +146,9 @@ exclude = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["app", "data"]
+
+[tool.uv]
+index-strategy = "unsafe-best-match"
 
 [tool.black]
 line-length = 100
