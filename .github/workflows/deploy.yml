@@ -7,7 +7,9 @@ on:
 env:
   AWS_REGION: ap-southeast-2
   ECR_REPOSITORY: rag-qa-system-hybrib  
-  LAMBDA_FUNCTION: rag-text-to-sql-server
+  BASE_IMAGE_REPOSITORY: lambda-python-deps
+  BASE_IMAGE_TAG: "3.12"
+  LAMBDA_FUNCTION: rag-text-to-sql-serverless
 
 jobs:
   deploy:
@@ -112,6 +114,16 @@ jobs:
           echo "✅ Successfully logged into ECR!"
           echo "Registry: ${{ steps.login-ecr.outputs.registry }}"
           echo ""
+
+      - name: Ensure ECR repositories exist
+        run: |
+          echo "Checking/creating base repository: ${{ env.BASE_IMAGE_REPOSITORY }}"
+          aws ecr describe-repositories --repository-names "${{ env.BASE_IMAGE_REPOSITORY }}" --region "${{ env.AWS_REGION }}" 2>/dev/null || \
+          aws ecr create-repository --repository-name "${{ env.BASE_IMAGE_REPOSITORY }}" --region "${{ env.AWS_REGION }}"
+
+          echo "Checking/creating app repository: ${{ env.ECR_REPOSITORY }}"
+          aws ecr describe-repositories --repository-names "${{ env.ECR_REPOSITORY }}" --region "${{ env.AWS_REGION }}" 2>/dev/null || \
+          aws ecr create-repository --repository-name "${{ env.ECR_REPOSITORY }}" --region "${{ env.AWS_REGION }}"
 
       - name: Check and build base image if needed
         env:
