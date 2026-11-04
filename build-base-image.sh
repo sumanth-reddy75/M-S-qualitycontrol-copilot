@@ -22,8 +22,8 @@
 set -e  # Exit on error
 
 # Configuration
-AWS_ACCOUNT_ID="685057748560"
-AWS_REGION="us-east-1"
+AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID:-$(aws sts get-caller-identity --query Account --output text 2>/dev/null || echo "341169625024")}"
+AWS_REGION="${AWS_REGION:-ap-southeast-2}"
 ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 ECR_REPOSITORY="lambda-python-deps"
 IMAGE_TAG="3.12"

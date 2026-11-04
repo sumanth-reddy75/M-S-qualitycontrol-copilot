@@ -206,6 +206,7 @@ jobs:
 
           docker build \
             --platform linux/amd64 \
+            --build-arg BASE_IMAGE=$ECR_REGISTRY/${{ env.BASE_IMAGE_REPOSITORY }}:${{ env.BASE_IMAGE_TAG }} \
             -f Dockerfile.lambda \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
