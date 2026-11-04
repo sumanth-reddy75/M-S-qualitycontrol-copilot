@@ -6,10 +6,8 @@ on:
 
 env:
   AWS_REGION: ap-southeast-2
-  ECR_REPOSITORY: rag-qa-system-hybrib
-  BASE_IMAGE_REPOSITORY: lambda-python-deps
-  BASE_IMAGE_TAG: "3.12"
-  LAMBDA_FUNCTION: rag-text-to-sql-server
+  ECR_REPOSITORY: rag-qa-system-hybrib  
+  LAMBDA_FUNCTION: rag-text-to-sql-serverless
 
 jobs:
   deploy:
