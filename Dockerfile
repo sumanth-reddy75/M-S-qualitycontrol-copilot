@@ -2,7 +2,7 @@
 # Multi-stage build for optimized image size
 
 # Stage 1: Base image with system dependencies
-FROM python:3.12-slim as base
+FROM python:3.12-slim AS base
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Dependencies installation
-FROM base as builder
+FROM base AS builder
 
 # Set working directory
 WORKDIR /app
@@ -43,7 +43,7 @@ COPY requirements.txt .
 RUN pip install --user --no-warn-script-location -r requirements.txt
 
 # Stage 3: Final runtime image
-FROM base as runtime
+FROM base AS runtime
 
 # Set working directory
 WORKDIR /app

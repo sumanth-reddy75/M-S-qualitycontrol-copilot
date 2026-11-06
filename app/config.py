@@ -4,6 +4,7 @@ Loads environment variables from .env file.
 """
 
 import os
+from pydantic import model_validator
 from pydantic_settings import BaseSettings
 from typing import Optional
 
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     # Pinecone Configuration
     PINECONE_API_KEY: Optional[str] = None  # Required for vector storage
     PINECONE_ENVIRONMENT: str = "us-east-1-aws"
-    PINECONE_INDEX_NAME: str = "rag-cache-docsqa"
+    PINECONE_INDEX_NAME: str = "multidata-document-vectors"
 
     # Supabase/PostgreSQL Configuration
     DATABASE_URL: Optional[str] = None  # Required for Text-to-SQL
@@ -72,14 +73,24 @@ class Settings(BaseSettings):
         return "data/cached_chunks"
 
     # S3 Storage Configuration (for Lambda deployment)
-    S3_CACHE_BUCKET: str = "rag-cache-docsqa"
-    AWS_REGION: str = "us-east-1"
+    S3_CACHE_BUCKET: str = "rag-cache-341169625024"
+    AWS_REGION: str = "ap-southeast-2"  # Change to your desired AWS region
     # AWS credentials from environment or IAM role (recommended for Lambda)
     # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are read automatically by boto3
 
     # Upstash Redis Configuration (Query-level caching)
     UPSTASH_REDIS_URL: Optional[str] = None  # Optional - app works without caching
     UPSTASH_REDIS_TOKEN: Optional[str] = None  # Optional - app works without caching
+    UPSTASH_REDIS_REST_URL: Optional[str] = None
+    UPSTASH_REDIS_REST_TOKEN: Optional[str] = None
+
+    @model_validator(mode="after")
+    def sync_redis_credentials(self) -> "Settings":
+        if not self.UPSTASH_REDIS_URL and self.UPSTASH_REDIS_REST_URL:
+            self.UPSTASH_REDIS_URL = self.UPSTASH_REDIS_REST_URL
+        if not self.UPSTASH_REDIS_TOKEN and self.UPSTASH_REDIS_REST_TOKEN:
+            self.UPSTASH_REDIS_TOKEN = self.UPSTASH_REDIS_REST_TOKEN
+        return self
 
     # Cache TTL Configuration (in seconds)
     CACHE_TTL_EMBEDDINGS: int = 604800  # 7 days - embeddings are static
@@ -97,6 +108,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = True
+        extra = "ignore"
 
 
 # Global settings instance

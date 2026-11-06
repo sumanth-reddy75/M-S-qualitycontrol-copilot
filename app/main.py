@@ -31,9 +31,16 @@ logger = setup_logging(log_level="INFO")
 
 # OPIK monitoring (optional - gracefully handles if not configured)
 try:
-    from opik import track
-    OPIK_AVAILABLE = True
-except ImportError:
+    if settings.OPIK_API_KEY:
+        from opik import track
+        OPIK_AVAILABLE = True
+    else:
+        OPIK_AVAILABLE = False
+        def track(name=None, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+except (ImportError, Exception):
     OPIK_AVAILABLE = False
     # Create a no-op decorator if OPIK is not installed
     def track(name=None, **kwargs):
@@ -1376,10 +1383,10 @@ def initialize_services():
 # Event handlers for startup/shutdown
 # NOTE: Startup event disabled for Lambda (initialization handled in lambda_handler.py)
 # Uncomment for local development with uvicorn
-# @app.on_event("startup")
-# async def startup_event():
-#     """Execute tasks on application startup."""
-#     initialize_services()
+@app.on_event("startup")
+async def startup_event():
+    """Execute tasks on application startup."""
+    initialize_services()
 
 
 @app.on_event("shutdown")
