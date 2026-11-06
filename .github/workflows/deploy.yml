@@ -383,13 +383,13 @@ jobs:
 
       - name: Test deployment
         env:
-          API_URL: ${{ secrets.API_GATEWAY_URL }}
+          API_URL: ${{ secrets.LAMBDA_FUNCTION_URL }}
         run: |
           echo ""
           echo "=========================================="
           echo "🧪 Testing Lambda Deployment"
           echo "=========================================="
-          echo "API Gateway URL: $API_URL"
+          echo "Lambda Function URL: $API_URL"
           echo "Testing: /health and /info endpoints"
           echo ""
 
@@ -430,7 +430,7 @@ jobs:
             echo ""
             echo "💡 Troubleshooting steps:"
             echo "1. Check CloudWatch logs: aws logs tail /aws/lambda/rag-text-to-sql --follow"
-            echo "2. Verify API Gateway URL includes /prod: $API_URL"
+            echo "2. Verify the Lambda Function URL is configured correctly: $API_URL"
             echo "3. Check Lambda function status in AWS Console"
             echo "4. Verify environment variables are set in Lambda"
             echo ""
@@ -478,13 +478,13 @@ jobs:
       - name: Test S3 Storage Backend
         if: contains(github.event.head_commit.message, '[test-s3]') || github.event_name == 'release'
         env:
-          API_URL: ${{ secrets.API_GATEWAY_URL }}
+          API_URL: ${{ secrets.LAMBDA_FUNCTION_URL }}
         run: |
           echo ""
           echo "=========================================="
           echo "🪣 Testing S3 Storage Backend"
           echo "=========================================="
-          echo "API Gateway URL: $API_URL"
+          echo "Lambda Function URL: $API_URL"
           echo "S3 Bucket: ${{ secrets.S3_CACHE_BUCKET }}"
           echo ""
 
