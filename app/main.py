@@ -464,9 +464,9 @@ async def query_documents(question: str, top_k: int = 3):
                         "question_length": len(question),
                         "top_k": top_k,
                         "chunks_retrieved": result.get('chunks_used', 0),
-                        "model": result.get('model', 'unknown')
+                        "model": result.get('model', settings.RAG_MODEL)
                     },
-                    "model": "gpt-4-turbo-preview",
+                    "model": settings.RAG_MODEL,
                     "provider": "openai"
                 }
 

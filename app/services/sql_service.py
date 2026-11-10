@@ -25,7 +25,8 @@ try:
     PINECONE_AVAILABLE = True
 except ImportError:
     PINECONE_AVAILABLE = False
-    # Fallback to local memory
+
+    # Local memory is also used when Pinecone is installed but not configured.
     from vanna.integrations.local.agent_memory import DemoAgentMemory
 
 from app.config import settings

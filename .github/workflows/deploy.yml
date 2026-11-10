@@ -194,6 +194,21 @@ jobs:
           df -h / | grep -E "Filesystem|/$"
           echo ""
 
+      - name: Validate Pinecone index name
+        run: |
+          INDEX="${{ secrets.PINECONE_INDEX_NAME }}"
+          echo "📌 PINECONE_INDEX_NAME = $INDEX"
+          BLOCKED_INDEXES=("multidata-document-vectors" "multidata-documents" "rag-documents")
+          for BAD in "${BLOCKED_INDEXES[@]}"; do
+            if [ "$INDEX" = "$BAD" ]; then
+              echo "❌ ERROR: '$INDEX' is a document-schema index — not compatible with this app."
+              echo "   This app generates embeddings via OpenAI and uses standard vector upserts."
+              echo "   Update the GitHub secret PINECONE_INDEX_NAME to: rag-document-vectors"
+              exit 1
+            fi
+          done
+          echo "✅ Pinecone index name is valid: $INDEX"
+
       - name: Build Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -315,6 +330,8 @@ jobs:
             "PINECONE_ENVIRONMENT": "${{ secrets.PINECONE_ENVIRONMENT }}",
             "PINECONE_INDEX_NAME": "${{ secrets.PINECONE_INDEX_NAME }}",
             "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
+            "RAG_MODEL": "gpt-4o-mini",
+            "VANNA_MODEL": "gpt-4o",
             "DATABASE_URL": "${{ secrets.DATABASE_URL }}",
             "UPSTASH_REDIS_URL": "${{ secrets.UPSTASH_REDIS_URL }}",
             "UPSTASH_REDIS_TOKEN": "${{ secrets.UPSTASH_REDIS_TOKEN }}",

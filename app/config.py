@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     # OpenAI Configuration
     OPENAI_API_KEY: Optional[str] = None  # Required for embeddings and RAG
+    RAG_MODEL: str = "gpt-4o-mini"  # Cost-effective, low-latency model for Document RAG answer generation
 
     # Pinecone Configuration
     PINECONE_API_KEY: Optional[str] = None  # Required for vector storage
