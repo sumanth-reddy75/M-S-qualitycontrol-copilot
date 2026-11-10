@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     # Pinecone Configuration
     PINECONE_API_KEY: Optional[str] = None  # Required for vector storage
     PINECONE_ENVIRONMENT: str = "us-east-1-aws"
-    PINECONE_INDEX_NAME: str = "multidata-document-vectors"
+    PINECONE_INDEX_NAME: str = "rag-document-vectors"
 
     # Supabase/PostgreSQL Configuration
     DATABASE_URL: Optional[str] = None  # Required for Text-to-SQL
